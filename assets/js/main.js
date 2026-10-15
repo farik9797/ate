@@ -3,12 +3,14 @@
 
   // Header shadow on scroll
   var header = document.querySelector('.site-header');
+  var toTop = document.querySelector('[data-to-top]');
   var onScroll = function () {
-    if (!header) return;
-    header.classList.toggle('is-scrolled', window.scrollY > 8);
+    if (header) header.classList.toggle('is-scrolled', window.scrollY > 8);
+    if (toTop) toTop.classList.toggle('is-visible', window.scrollY > 600);
   };
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
+  if (toTop) toTop.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
   // Mobile menu
   var menu = document.querySelector('.mobile-menu');
