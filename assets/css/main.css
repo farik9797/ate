@@ -34,15 +34,12 @@ h1, h2, h3, .font-display { font-family: 'Geologica', 'Onest', system-ui, sans-s
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: .55rem; height: 48px; padding-inline: 1.4rem; border-radius: 10px; font-weight: 600; font-size: 15px; line-height: 1; cursor: pointer; transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform .2s ease, box-shadow .2s ease; white-space: nowrap; }
 .btn:active { transform: translateY(1px); }
 .btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
-.btn-sm { height: 42px; padding-inline: 1.1rem; font-size: 14px; }
 .btn-primary { background: var(--blue); color: #fff; box-shadow: 0 8px 20px -10px rgba(30, 98, 208, .7); }
 .btn-primary:hover { background: var(--blue-2); }
 .btn-teal { background: var(--teal); color: var(--navy); }
 .btn-teal:hover { background: #17bdb0; }
 .btn-outline-light { border: 1.5px solid rgba(255,255,255,.55); color: #fff; background: rgba(255,255,255,.04); backdrop-filter: blur(4px); }
 .btn-outline-light:hover { border-color: #fff; background: rgba(255,255,255,.12); }
-.btn-outline { border: 1.5px solid var(--blue); color: var(--blue); background: #fff; }
-.btn-outline:hover { background: var(--blue); color: #fff; }
 .btn .ic { width: 1.05rem; height: 1.05rem; transition: transform .2s ease; }
 .btn:hover .ic-arrow { transform: translateX(3px); }
 
@@ -73,7 +70,6 @@ h1, h2, h3, .font-display { font-family: 'Geologica', 'Onest', system-ui, sans-s
 /* Hero extras */
 .eyebrow-line { display: flex; align-items: center; gap: 14px; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; font-weight: 500; color: rgba(255,255,255,.9); }
 .eyebrow-line .line { width: 34px; height: 2px; background: var(--blue-3); border-radius: 2px; flex: none; }
-.btn-pill { border-radius: 999px; height: 52px; padding-inline: 1.8rem; }
 .link-line { display: inline-flex; align-items: center; gap: .6rem; font-weight: 600; font-size: 15px; color: #fff; padding-bottom: 5px; border-bottom: 1.5px solid rgba(255,255,255,.45); transition: border-color .2s ease; }
 .link-line:hover { border-color: #fff; }
 .link-line .ic { width: 1.05rem; height: 1.05rem; transition: transform .2s ease; }

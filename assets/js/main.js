@@ -68,6 +68,28 @@
       });
     });
 
+    // Direction blocks slide in from their side
+    document.querySelectorAll('[data-slide]').forEach(function (el) {
+      var fromX = el.getAttribute('data-slide') === 'left' ? -60 : 60;
+      gsap.from(el.querySelector('.dir2-body'), {
+        x: fromX, opacity: 0, duration: .9, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 80%', once: true }
+      });
+      gsap.from(el.querySelector('.dir2-bg'), {
+        scale: 1.08, duration: 1.4, ease: 'power2.out',
+        scrollTrigger: { trigger: el, start: 'top 80%', once: true }
+      });
+    });
+
+    // Hero: soft parallax of the photo while scrolling away
+    var heroImg = document.querySelector('.hero-img');
+    if (heroImg) {
+      gsap.to(heroImg, {
+        yPercent: 14, ease: 'none',
+        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+      });
+    }
+
     document.querySelectorAll('.rv-group').forEach(function (group) {
       var items = group.children;
       gsap.from(items, {
