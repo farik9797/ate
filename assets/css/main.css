@@ -108,7 +108,8 @@ h1, h2, h3, .font-display { font-family: 'Geologica', 'Onest', system-ui, sans-s
   .dirs { grid-template-columns: 1fr 1fr; }
   .dir2 { min-height: 460px; }
   .dir2-espa .dir2-body { padding: 56px 32px 56px max(32px, calc((100vw - 1400px) / 2 + 32px)); max-width: calc(max(32px, (100vw - 1400px) / 2 + 32px) + 400px); }
-  .dir2-hidro { clip-path: polygon(84px 0, 100% 0, 100% 100%, 0 100%); margin-left: -84px; }
+  .dir2-espa { margin-right: -85px; }
+  .dir2-hidro { clip-path: polygon(84px 0, 100% 0, 100% 100%, 0 100%); }
   .dir2-hidro .dir2-body { padding: 56px 32px 56px 132px; }
 }
 @media (max-width: 767px) {
