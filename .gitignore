@@ -4,3 +4,4 @@ password.md
 
 # firecrawl local cache
 .firecrawl/
+.playwright-mcp/
