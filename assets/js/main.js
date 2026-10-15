@@ -10,6 +10,10 @@
   };
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
+  // Anchor jumps (/#contacts) and scroll restoration can land after init
+  window.addEventListener('load', onScroll);
+  window.addEventListener('hashchange', onScroll);
+  setTimeout(onScroll, 300);
   if (toTop) toTop.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
   // Mobile menu
