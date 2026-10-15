@@ -13,7 +13,7 @@
 
 ## Сделано
 - `index.html` — одностраничный лендинг: шапка, hero (Астана/Байтерек), два направления ESPA/Hidrostal, 5 преимуществ, о компании, 3 объекта, каталоги + видео, контакты с формой, футер. Мобильное меню, GSAP ScrollTrigger-ревилы, CSS-анимация hero.
-- `assets/css/main.css`, `assets/js/main.js` (версия в query `?v=1.0.0` — поднимать при правках).
+- `assets/css/main.css`, `assets/js/main.js` (версия в query `?v=1.0.1` — поднимать при правках).
 - Логотипы брендов — официальные: `assets/logo/espa.svg` (с espa.com), `assets/logo/hidrostal-white.png` / `hidrostal-blue.png` (из Logo.png с hidrostal.com, фон убран).
 - Иконки — Lucide (lucide-static 0.468) + Simple Icons (Telegram, WhatsApp, Instagram, YouTube) инлайн-спрайтом в начале `<body>`. LinkedIn в Simple Icons больше нет — не использован.
 - `.claude/launch.json` — превью: `python3 -m http.server 8787` (конфиг `static`).
