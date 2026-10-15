@@ -36,9 +36,12 @@
 
   // Active nav link by current page
   var page = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
-  document.querySelectorAll('.nav-link, .m-link').forEach(function (a) {
+  document.querySelectorAll('.nav-link, .m-link, .sub-link').forEach(function (a) {
     var href = (a.getAttribute('href') || '').split('#')[0].split('?')[0].toLowerCase();
-    if (href === page) a.classList.add('is-active');
+    if (href === page) {
+      a.classList.add('is-active');
+      var parent = a.closest('.nav-item'); if (parent) { var top = parent.querySelector('.nav-link'); if (top) top.classList.add('is-active'); }
+    }
   });
 
   // Placeholder links (PDF catalogues etc.): no target yet
