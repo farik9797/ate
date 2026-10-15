@@ -34,17 +34,57 @@
   }
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setMenu(false); });
 
-  // Active nav link by section in view
-  var links = Array.prototype.slice.call(document.querySelectorAll('.nav-link[href^="#"]'));
-  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
-  if ('IntersectionObserver' in window && sections.length) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (!en.isIntersecting) return;
-        links.forEach(function (a) { a.classList.toggle('is-active', a.getAttribute('href') === '#' + en.target.id); });
+  // Active nav link by current page
+  var page = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+  document.querySelectorAll('.nav-link, .m-link').forEach(function (a) {
+    var href = (a.getAttribute('href') || '').split('#')[0].split('?')[0].toLowerCase();
+    if (href === page) a.classList.add('is-active');
+  });
+
+  // Placeholder links (PDF catalogues etc.): no target yet
+  document.querySelectorAll('[data-placeholder]').forEach(function (a) {
+    a.addEventListener('click', function (e) { e.preventDefault(); });
+  });
+
+  // Objects: filter by direction (buttons + ?dir= in the URL)
+  var filterBar = document.querySelector('[data-filter-bar]');
+  if (filterBar) {
+    var cards = document.querySelectorAll('[data-dir]');
+    var applyFilter = function (dir) {
+      filterBar.querySelectorAll('[data-filter]').forEach(function (b) {
+        var on = b.getAttribute('data-filter') === dir;
+        b.classList.toggle('is-active', on); b.setAttribute('aria-pressed', String(on));
       });
-    }, { rootMargin: '-40% 0px -55% 0px' });
-    sections.forEach(function (s) { io.observe(s); });
+      cards.forEach(function (c) { c.hidden = dir !== 'all' && c.getAttribute('data-dir') !== dir; });
+    };
+    filterBar.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-filter]'); if (b) applyFilter(b.getAttribute('data-filter'));
+    });
+    var initial = new URLSearchParams(location.search).get('dir');
+    applyFilter(initial === 'espa' || initial === 'hidrostal' ? initial : 'all');
+  }
+
+  // Video modal (YouTube embed by data-video id; empty id shows a note)
+  var modal = document.querySelector('[data-video-modal]');
+  if (modal) {
+    var frame = modal.querySelector('iframe');
+    var note = modal.querySelector('[data-video-note]');
+    var openVideo = function (id, title) {
+      modal.classList.add('is-open'); modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      if (id) { frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1&rel=0'; frame.hidden = false; note.hidden = true; }
+      else { frame.hidden = true; note.hidden = false; }
+      modal.querySelector('[data-video-title]').textContent = title || '';
+    };
+    var closeVideo = function () {
+      modal.classList.remove('is-open'); modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = ''; frame.src = '';
+    };
+    document.querySelectorAll('[data-video]').forEach(function (card) {
+      card.addEventListener('click', function (e) { e.preventDefault(); openVideo(card.getAttribute('data-video'), card.getAttribute('data-title')); });
+    });
+    modal.querySelectorAll('[data-video-close]').forEach(function (b) { b.addEventListener('click', closeVideo); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeVideo(); });
   }
 
   // Current year in footer
