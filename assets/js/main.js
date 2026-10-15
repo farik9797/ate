@@ -105,8 +105,12 @@
   var leadModal = document.querySelector('[data-lead-modal]');
   if (leadModal) {
     var leadTitle = leadModal.querySelector('[data-lead-title]');
-    var openLead = function (title) {
+    var openLead = function (title, dir, note) {
       if (title && leadTitle) leadTitle.textContent = title;
+      var sel = leadModal.querySelector('select[name="direction"]');
+      if (sel) sel.value = dir || '';
+      var comment = leadModal.querySelector('textarea[name="comment"]');
+      if (comment) comment.value = note || '';
       leadModal.classList.add('is-open'); leadModal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
       var first = leadModal.querySelector('input'); if (first) setTimeout(function () { first.focus(); }, 250);
@@ -121,7 +125,7 @@
       a.addEventListener('click', function (e) {
         e.preventDefault();
         setMenu(false);
-        openLead(a.getAttribute('data-popup-title') || a.textContent.trim());
+        openLead(a.getAttribute('data-popup-title') || a.textContent.trim(), a.getAttribute('data-popup-dir'), a.getAttribute('data-popup-note'));
       });
     });
     leadModal.querySelectorAll('[data-lead-close]').forEach(function (b) { b.addEventListener('click', closeLead); });
