@@ -91,15 +91,41 @@
   var y = document.querySelector('[data-year]');
   if (y) y.textContent = String(new Date().getFullYear());
 
-  // Form: mockup only, no backend yet
-  var form = document.querySelector('[data-lead-form]');
-  if (form) {
+  // Forms: mockup only, no backend yet
+  document.querySelectorAll('[data-lead-form]').forEach(function (form) {
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var note = form.querySelector('[data-form-note]');
       if (note) { note.hidden = false; }
       form.reset();
     });
+  });
+
+  // Lead popup: any CTA with data-popup="lead" opens the request form
+  var leadModal = document.querySelector('[data-lead-modal]');
+  if (leadModal) {
+    var leadTitle = leadModal.querySelector('[data-lead-title]');
+    var openLead = function (title) {
+      if (title && leadTitle) leadTitle.textContent = title;
+      leadModal.classList.add('is-open'); leadModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      var first = leadModal.querySelector('input'); if (first) setTimeout(function () { first.focus(); }, 250);
+    };
+    var closeLead = function () {
+      if (!leadModal.classList.contains('is-open')) return;
+      leadModal.classList.remove('is-open'); leadModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      var note = leadModal.querySelector('[data-form-note]'); if (note) note.hidden = true;
+    };
+    document.querySelectorAll('[data-popup="lead"]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        setMenu(false);
+        openLead(a.getAttribute('data-popup-title') || a.textContent.trim());
+      });
+    });
+    leadModal.querySelectorAll('[data-lead-close]').forEach(function (b) { b.addEventListener('click', closeLead); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeLead(); });
   }
 
   // Scroll reveal with GSAP (static HTML → GSAP + ScrollTrigger)

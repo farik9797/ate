@@ -273,6 +273,12 @@ textarea.field { height: auto; min-height: 112px; padding: 14px 16px; resize: ve
 .modal-body iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .modal-note { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; color: rgba(255,255,255,.7); padding: 24px; font-size: 15px; line-height: 1.5; }
 
+/* Попап заявки */
+.modal-box-form { width: min(700px, 100%); }
+.modal-form { padding: 6px 20px 22px; }
+@media (min-width: 640px) { .modal-form { padding: 6px 24px 26px; } }
+.modal-box-form .modal-head { font-family: 'Geologica', sans-serif; font-size: 20px; font-weight: 700; padding: 18px 12px 12px 24px; }
+
 /* Контакты */
 .c-card { border: 1px solid var(--line); border-radius: 16px; padding: 26px 24px; background: #fff; }
 .c-row { display: flex; gap: 14px; align-items: flex-start; }
@@ -294,3 +300,28 @@ textarea.field { height: auto; min-height: 112px; padding: 14px 16px; resize: ve
 .cta-band::before { content: ''; position: absolute; right: -80px; top: -80px; width: 320px; height: 320px; border-radius: 50%; background: radial-gradient(circle, rgba(27,209,194,.22), transparent 70%); }
 .cta-band > * { position: relative; }
 @media (min-width: 768px) { .cta-band { padding: 44px 48px; } }
+
+/* ===== Страницы направлений ===== */
+.dir-hero { position: relative; overflow: hidden; }
+.dir-hero .wrap { position: relative; z-index: 2; padding-block: 44px 52px; }
+@media (min-width: 768px) { .dir-hero .wrap { padding-block: 64px 80px; } }
+.dir-hero-body { max-width: 640px; }
+.dir-hero-img { position: absolute; top: 0; right: 0; bottom: 0; width: 100%; height: 100%; object-fit: cover; object-position: right center; }
+.dir-hero::before { content: ''; position: absolute; inset: 0; z-index: 1; }
+.dir-hero-light { background: #EAF4FD; color: var(--navy); }
+.dir-hero-light::before { background: linear-gradient(90deg, rgba(234,244,253,.98) 0%, rgba(234,244,253,.9) 45%, rgba(234,244,253,.35) 75%, rgba(234,244,253,0) 100%); }
+.dir-hero-dark { background: #0B1A2E; }
+.dir-hero-dark::before { background: linear-gradient(90deg, rgba(8,20,36,.96) 0%, rgba(8,20,36,.8) 48%, rgba(8,20,36,.2) 80%); }
+.crumbs-dark { color: #6B7A8F; } .crumbs-dark a:hover { color: var(--navy); }
+.dir-hero-links { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 10px 26px; }
+.dir-hero-links a { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; color: var(--navy); transition: color .2s ease; }
+.dir-hero-links a:hover { color: var(--blue); }
+.dir-hero-links .ic { width: 1.25rem; height: 1.25rem; stroke-width: 1.7; color: var(--blue); }
+.dir-hero-links-dark a { color: #fff; } .dir-hero-links-dark a:hover { color: var(--teal); } .dir-hero-links-dark .ic { color: var(--teal); }
+@media (max-width: 767px) {
+  .dir-hero-img { opacity: .35; object-position: 70% center; }
+  .dir-hero-light::before { background: linear-gradient(180deg, rgba(234,244,253,.9) 0%, rgba(234,244,253,.75) 100%); }
+  .dir-hero-dark::before { background: linear-gradient(180deg, rgba(8,20,36,.9) 0%, rgba(8,20,36,.8) 100%); }
+}
+.chip-dark { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.18); color: rgba(255,255,255,.85); }
+.chip-dark:hover { border-color: var(--teal); color: var(--teal); }
