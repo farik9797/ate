@@ -163,6 +163,9 @@ h1, h2, h3, .font-display { font-family: 'Geologica', 'Onest', system-ui, sans-s
 .field::placeholder { color: rgba(255,255,255,.5); }
 .field:focus { outline: none; border-color: var(--teal); background: rgba(255,255,255,.1); }
 textarea.field { height: auto; min-height: 112px; padding: 14px 16px; resize: vertical; }
+.field-select { appearance: none; -webkit-appearance: none; padding-right: 44px; cursor: pointer; }
+.field-select:invalid { color: rgba(255,255,255,.5); }
+.field-select option { color: var(--ink); background: #fff; }
 .contact-row { display: flex; align-items: flex-start; gap: 14px; }
 .contact-row .ic { color: var(--teal); margin-top: 2px; }
 
