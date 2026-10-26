@@ -35,7 +35,7 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setMenu(false); });
 
   // Active nav link by current page
-  var page = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+  var page = (document.body.getAttribute('data-nav') || location.pathname.split('/').pop() || 'index.html').toLowerCase();
   document.querySelectorAll('.nav-link, .m-link, .sub-link').forEach(function (a) {
     var href = (a.getAttribute('href') || '').split('#')[0].split('?')[0].toLowerCase();
     if (href === page) {
@@ -43,6 +43,18 @@
       var parent = a.closest('.nav-item'); if (parent) { var top = parent.querySelector('.nav-link'); if (top) top.classList.add('is-active'); }
     }
   });
+
+  // Catalogue accordion: open the category from the URL hash (katalog.html#espa-stancii)
+  var openFromHash = function () {
+    var id = decodeURIComponent((location.hash || '').slice(1));
+    var el = id && document.getElementById(id);
+    if (el && el.tagName === 'DETAILS') {
+      el.open = true;
+      setTimeout(function () { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+    }
+  };
+  openFromHash();
+  window.addEventListener('hashchange', openFromHash);
 
   // Placeholder links (PDF catalogues etc.): no target yet
   document.querySelectorAll('[data-placeholder]').forEach(function (a) {

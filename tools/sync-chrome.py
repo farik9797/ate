@@ -33,7 +33,7 @@ def main():
             sys.exit("index.html: нет блока chrome:%s" % b)
         parts[b] = m.group(1)
 
-    for path in sorted(glob.glob(os.path.join(ROOT, "*.html"))):
+    for path in sorted(glob.glob(os.path.join(ROOT, "*.html")) + glob.glob(os.path.join(ROOT, "product", "*.html"))):
         if os.path.abspath(path) == os.path.abspath(SRC):
             continue
         text = open(path, encoding="utf-8").read()
