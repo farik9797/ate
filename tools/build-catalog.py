@@ -23,7 +23,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = "https://farik9797.github.io/ate/"
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36"
 E = html.escape
-PALETTE = ["#1E62D0", "#008AC7", "#15B3A6", "#1D3C8D", "#5B8DEF", "#0B6E99", "#7FB2F0", "#2C4A7A", "#3FBFE0", "#8C9EC9"]
+PALETTE = ["#1D3C8D", "#008AC7", "#4CBFF0", "#2E54B8", "#0074A8", "#7C93D1", "#173072", "#5FB8DD", "#3A5BA8", "#9DB4E0"]
 
 
 # ------------------------------------------------------------------ helpers
@@ -398,7 +398,7 @@ def product_page(p, related, chrome):
 <meta property="og:url" content="{E(url)}">
 <meta property="og:image" content="{E(img_abs)}">
 <link rel="canonical" href="{E(url)}">
-<meta name="theme-color" content="#0B1F3A">
+<meta name="theme-color" content="#0F1C3E">
 <link rel="icon" type="image/svg+xml" href="favicon.svg?v=6">
 <link rel="icon" type="image/png" sizes="64x64" href="favicon.png?v=6">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=6">
