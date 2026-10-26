@@ -101,6 +101,8 @@ def espa_products(raw):
     cats = {k: (t, d) for k, t, d in CD.ESPA_CATEGORIES}
     out = []
     for p in raw:
+        if p["slug"] in CD.ESPA_EXCLUDE:
+            continue
         sub = CD.SUBTITLES.get(p["subtitle"], p["subtitle"])
         desc = [CD.DESCRIPTIONS.get(x, x) for x in p["description"]]
         feats = []
@@ -477,6 +479,11 @@ def main():
     allp = espa + hidro
     chrome = chrome_blocks()
     os.makedirs(os.path.join(ROOT, "product"), exist_ok=True)
+    keep = {os.path.basename(p["file"]) for p in allp}
+    for f in os.listdir(os.path.join(ROOT, "product")):  # убрать страницы снятых с сайта серий
+        if f.endswith(".html") and f not in keep:
+            os.remove(os.path.join(ROOT, "product", f))
+            print("удалена", f)
     for p in allp:
         related = [r for r in allp if r["brand"] == p["brand"] and r["category"] == p["category"] and r["slug"] != p["slug"]]
         with open(os.path.join(ROOT, p["file"]), "w", encoding="utf-8") as f:
