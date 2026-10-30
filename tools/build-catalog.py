@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Генерирует каталог: страницы товаров product/*.html и раскрывающиеся категории в katalog.html.
+"""Генерирует каталог: страницы товаров product/*.html и в katalog.html — плитки категорий, фильтры и сетку серий.
 
 Вход:  data/espa-raw.json (tools/scrape-espa.py), tools/catalog_data.py (переводы, Hidrostal).
-Выход: product/espa-*.html, product/hidrostal-*.html, блоки <!-- gen:espa --> и <!-- gen:hidrostal -->
+Выход: product/espa-*.html, product/hidrostal-*.html; блоки <!-- gen:cats-* -->, <!-- gen:fcats-* -->, <!-- gen:products -->
        в katalog.html, data/catalog.json (нормализованные данные для WP/WooCommerce).
 
 Запуск:  python3 tools/build-catalog.py
@@ -246,11 +246,33 @@ def kpi_chips(p):
     return "".join(f"<span>{E(x)}</span>" for x in parts)
 
 
-def card(p):
+def kpi_num(s):
+    """'до 5,5 м³/ч' -> 5.5; 'до 2500 л/с' -> 9000 (м³/ч); 'до 96 м' -> 96. Пусто -> ''."""
+    m = re.search(r"([\d\s]+(?:,\d+)?)\s*(л/с|м³/ч|м)\b", s or "")
+    if not m:
+        return ""
+    v = float(m.group(1).replace(" ", "").replace(",", "."))
+    return fmt(v * 3.6 if m.group(2) == "л/с" else v, 1).replace(",", ".")
+
+
+def plural(n, one, few, many):
+    return one if n % 10 == 1 and n % 100 != 11 else few if 2 <= n % 10 <= 4 and not 12 <= n % 100 <= 14 else many
+
+
+def webp_size(path):
+    """Размер картинки WebP (VP8X) без Pillow."""
+    with open(path, "rb") as f:
+        b = f.read(30)
+    if b[12:16] == b"VP8X":
+        return int.from_bytes(b[24:27], "little") + 1, int.from_bytes(b[27:30], "little") + 1
+    return None
+
+
+def card(p, attrs=""):
     img = (f'<img src="{E(p["image"])}" alt="{E(p["full_name"])}" loading="lazy">' if p["image"]
            else '<span class="pcard-noimg">Фото по запросу</span>')
     chips = kpi_chips(p)
-    return (f'<a class="pcard" href="{E(p["file"])}">'
+    return (f'<a class="pcard" href="{E(p["file"])}"{attrs}>'
             f'<span class="pcard-img">{img}</span>'
             f'<span class="pcard-body"><span class="pcard-brand">{"ESPA" if p["brand"]=="espa" else "Hidrostal"}</span>'
             f'<span class="pcard-t">{E(p["name"])}</span>'
@@ -259,21 +281,45 @@ def card(p):
             f'<span class="pcard-link">Тех. характеристики {ICON_ARROW}</span></span></a>')
 
 
-def accordion(brand, categories, products, open_first=True):
+def cat_tiles(brand, categories, products):
+    """Крупные плитки категорий с обложками (assets/img/cats/*.webp, tools/build-covers.py)."""
     out = []
     for i, (key, title, desc) in enumerate(categories, 1):
-        items = [p for p in products if p["category"] == key]
-        if not items:
+        n = sum(1 for p in products if p["category"] == key)
+        if not n:
             continue
-        n = len(items)
-        word = "серия" if n % 10 == 1 and n % 100 != 11 else "серии" if 2 <= n % 10 <= 4 and not 12 <= n % 100 <= 14 else "серий"
+        cid = f"{brand}-{key}"
+        cover = f"assets/img/cats/{cid}.webp"
+        size = webp_size(os.path.join(ROOT, cover))
+        dims = f' width="{size[0]}" height="{size[1]}"' if size else ""
         out.append(
-            f'<details class="acc" id="{brand}-{key}"{" open" if (open_first and i == 1) else ""}>'
-            f'<summary class="acc-sum"><span class="acc-num">{i:02d}</span>'
-            f'<span class="acc-tt"><span class="acc-t">{E(title)}</span><span class="acc-s">{E(desc)} · {n} {word}</span></span>'
-            f'<span class="acc-ic" aria-hidden="true"><svg class="ic"><use href="#i-chevron-down"/></svg></span></summary>'
-            f'<div class="acc-body"><div class="pgrid">{"".join(card(p) for p in items)}</div></div></details>')
+            f'<a class="ctile ctile-{brand}" id="{cid}" href="#{cid}" data-cat-tile="{cid}">'
+            f'<span class="ctile-top"><span class="ctile-num">{i:02d}</span>'
+            f'<span class="ctile-count">{n} {plural(n, "серия", "серии", "серий")}</span></span>'
+            f'<span class="ctile-t">{E(title)}</span><span class="ctile-s">{E(desc)}</span>'
+            f'<img class="ctile-img" src="{cover}" alt=""{dims} loading="lazy">'
+            f'<span class="ctile-go"><span class="ctile-arrow">{ICON_ARROW}</span>Смотреть серии</span></a>')
     return "\n".join(out)
+
+
+def filter_cats(brand, categories, products):
+    """Чекбоксы категорий для боковой панели фильтров."""
+    out = []
+    for key, title, _ in categories:
+        n = sum(1 for p in products if p["category"] == key)
+        if n:
+            out.append(f'<label class="fchk"><input type="checkbox" name="cat" value="{brand}-{key}">'
+                       f'<span class="fchk-box" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span>'
+                       f'<span class="fchk-t">{E(title)}</span><span class="fchk-n">{n}</span></label>')
+    return "\n".join(out)
+
+
+def product_grid(products):
+    """Все серии одной сеткой; data-атрибуты — для фильтров на katalog.html (assets/js/main.js)."""
+    return "\n".join(
+        card(p, f' data-brand="{p["brand"]}" data-cat="{p["brand"]}-{p["category"]}"'
+                f' data-q="{kpi_num(p["kpi"].get("q"))}" data-h="{kpi_num(p["kpi"].get("h"))}"')
+        for p in products)
 
 
 def table_html(t):
@@ -490,8 +536,13 @@ def main():
             f.write(product_page(p, related, chrome))
     kat = os.path.join(ROOT, "katalog.html")
     text = open(kat, encoding="utf-8").read()
-    text = replace_block(text, "espa", accordion("espa", CD.ESPA_CATEGORIES, espa))
-    text = replace_block(text, "hidrostal", accordion("hidrostal", CD.HIDROSTAL_CATEGORIES, hidro))
+    text = replace_block(text, "cats-espa", cat_tiles("espa", CD.ESPA_CATEGORIES, espa))
+    text = replace_block(text, "cats-hidrostal", cat_tiles("hidrostal", CD.HIDROSTAL_CATEGORIES, hidro))
+    text = replace_block(text, "fcats-espa", filter_cats("espa", CD.ESPA_CATEGORIES, espa))
+    text = replace_block(text, "fcats-hidrostal", filter_cats("hidrostal", CD.HIDROSTAL_CATEGORIES, hidro))
+    order = {k: i for i, (k, _, _) in enumerate(CD.ESPA_CATEGORIES + CD.HIDROSTAL_CATEGORIES)}
+    text = replace_block(text, "products", product_grid(sorted(allp, key=lambda p: (p["brand"] != "espa", order[p["category"]]))))
+    text = re.sub(r"(<span data-total>)\d+(</span>)", lambda m: f"{m.group(1)}{len(allp)}{m.group(2)}", text)
     open(kat, "w", encoding="utf-8").write(text)
     json.dump([{k: v for k, v in p.items() if k != "curves"} | {"curve_models": list(p["curves"])} for p in allp],
               open(os.path.join(ROOT, "data", "catalog.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
